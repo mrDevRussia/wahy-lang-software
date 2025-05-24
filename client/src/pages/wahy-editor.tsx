@@ -175,8 +175,8 @@ export default function WahyEditor() {
     }
   };
 
-  const lineCount = code.split('\n').length;
-  const charCount = code.length;
+  const lineCount = code ? code.split('\n').length : 0;
+  const charCount = code ? code.length : 0;
 
   return (
     <div className="h-screen flex flex-col bg-slate-50" dir="rtl">
