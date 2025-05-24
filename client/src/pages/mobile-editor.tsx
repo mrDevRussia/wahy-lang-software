@@ -20,8 +20,11 @@ import {
   AlertCircle,
   Eye,
   Code2,
-  Smartphone
+  Smartphone,
+  HelpCircle,
+  BookOpen
 } from "lucide-react";
+import { useLocation } from "wouter";
 import type { WahyFile } from "@shared/schema";
 
 export default function MobileEditor() {
@@ -30,6 +33,7 @@ export default function MobileEditor() {
   const [fileName, setFileName] = useState("input.wahy");
   const [activeTab, setActiveTab] = useState<'editor' | 'preview' | 'files'>('editor');
   const [showCommands, setShowCommands] = useState(false);
+  const [, setLocation] = useLocation();
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -186,6 +190,14 @@ export default function MobileEditor() {
           </div>
           
           <div className="flex items-center space-x-2 space-x-reverse">
+            <Button
+              onClick={() => setLocation('/tutorial')}
+              size="sm"
+              variant="ghost"
+              className="text-white hover:bg-blue-500"
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
             <Button
               onClick={handleSave}
               disabled={saveFileMutation.isPending}

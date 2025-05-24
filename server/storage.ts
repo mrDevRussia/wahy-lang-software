@@ -45,7 +45,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteWahyFile(id: number): Promise<boolean> {
     const result = await db.delete(wahyFiles).where(eq(wahyFiles.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 }
 

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import WahyEditor from "@/pages/wahy-editor";
 import LoginPage from "@/pages/login";
 import MobileEditor from "@/pages/mobile-editor";
+import TutorialPage from "@/pages/tutorial";
 import NotFound from "@/pages/not-found";
 import { useEffect, useState } from "react";
 
@@ -25,6 +26,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      <Route path="/tutorial" component={TutorialPage} />
       <Route path="/mobile" component={MobileEditor} />
       <Route path="/" component={isMobile ? MobileEditor : WahyEditor} />
       <Route component={NotFound} />
