@@ -149,7 +149,7 @@ export default function MobileEditor() {
 
   const handleDownload = () => {
     if (result?.success && result.html) {
-      downloadHtml(code, fileName.replace('.wahy', '.html'));
+      downloadHtml({ code, filename: fileName.replace('.wahy', '.html') });
     } else {
       toast({
         title: "لا يوجد محتوى",
