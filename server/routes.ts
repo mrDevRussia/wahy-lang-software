@@ -2,9 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertWahyFileSchema, interpretationResultSchema } from "@shared/schema";
-import { spawn } from "child_process";
-import path from "path";
-import fs from "fs/promises";
+import { interpretWahyCode } from "./wahy-interpreter";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -96,63 +94,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Code is required" });
       }
 
-      // Write code to temporary file
-      const tempDir = path.join(process.cwd(), 'temp');
-      await fs.mkdir(tempDir, { recursive: true });
-      const tempFile = path.join(tempDir, `temp_${Date.now()}.wahy`);
-      await fs.writeFile(tempFile, code, 'utf8');
-
-      // Run Python interpreter
-      const pythonScript = path.join(process.cwd(), 'interpreter', 'wahy_interpreter.py');
-      
-      const python = spawn('python3', [pythonScript, tempFile], {
-        stdio: ['pipe', 'pipe', 'pipe']
-      });
-
-      let stdout = '';
-      let stderr = '';
-
-      python.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-
-      python.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-
-      python.on('close', async (code) => {
-        // Clean up temp file
-        try {
-          await fs.unlink(tempFile);
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-
-        if (code === 0) {
-          try {
-            const result = JSON.parse(stdout);
-            res.json(result);
-          } catch (e) {
-            res.json({ success: true, html: stdout });
-          }
-        } else {
-          // Parse error from stderr
-          let errorMessage = stderr;
-          let lineNumber;
-          
-          // Try to extract line number from error
-          const lineMatch = stderr.match(/line (\d+)/i);
-          if (lineMatch) {
-            lineNumber = parseInt(lineMatch[1]);
-          }
-
-          res.json({
-            success: false,
-            error: errorMessage || "Unknown error occurred",
-            lineNumber
-          });
-        }
-      });
+      // Use JavaScript interpreter
+      const result = interpretWahyCode(code);
+      res.json(result);
 
     } catch (error) {
       res.status(500).json({ 
@@ -170,58 +114,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Code is required" });
       }
 
-      // Write code to temporary file
-      const tempDir = path.join(process.cwd(), 'temp');
-      await fs.mkdir(tempDir, { recursive: true });
-      const tempFile = path.join(tempDir, `temp_${Date.now()}.wahy`);
-      await fs.writeFile(tempFile, code, 'utf8');
-
-      // Run Python interpreter
-      const pythonScript = path.join(process.cwd(), 'interpreter', 'wahy_interpreter.py');
+      // Use JavaScript interpreter
+      const result = interpretWahyCode(code);
       
-      const python = spawn('python3', [pythonScript, tempFile], {
-        stdio: ['pipe', 'pipe', 'pipe']
-      });
-
-      let stdout = '';
-      let stderr = '';
-
-      python.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
-
-      python.stderr.on('data', (data) => {
-        stderr += data.toString();
-      });
-
-      python.on('close', async (code) => {
-        // Clean up temp file
-        try {
-          await fs.unlink(tempFile);
-        } catch (e) {
-          // Ignore cleanup errors
-        }
-
-        if (code === 0) {
-          try {
-            const result = JSON.parse(stdout);
-            if (result.success && result.html) {
-              res.setHeader('Content-Type', 'text/html');
-              res.setHeader('Content-Disposition', `attachment; filename="${filename || 'output.html'}"`);
-              res.send(result.html);
-            } else {
-              res.status(400).json({ error: result.error || "Failed to generate HTML" });
-            }
-          } catch (e) {
-            // If not JSON, assume it's raw HTML
-            res.setHeader('Content-Type', 'text/html');
-            res.setHeader('Content-Disposition', `attachment; filename="${filename || 'output.html'}"`);
-            res.send(stdout);
-          }
-        } else {
-          res.status(400).json({ error: stderr || "Failed to interpret code" });
-        }
-      });
+      if (result.success && result.html) {
+        res.setHeader('Content-Type', 'text/html');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename || 'output.html'}"`);
+        res.send(result.html);
+      } else {
+        res.status(400).json({ error: result.error || "Failed to generate HTML" });
+      }
 
     } catch (error) {
       res.status(500).json({ error: "Failed to generate download" });
