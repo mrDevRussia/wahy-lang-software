@@ -1,4 +1,6 @@
 import { wahyFiles, type WahyFile, type InsertWahyFile } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   getWahyFile(id: number): Promise<WahyFile | undefined>;
@@ -9,83 +11,42 @@ export interface IStorage {
   deleteWahyFile(id: number): Promise<boolean>;
 }
 
-export class MemStorage implements IStorage {
-  private wahyFiles: Map<number, WahyFile>;
-  private currentId: number;
-
-  constructor() {
-    this.wahyFiles = new Map();
-    this.currentId = 1;
-    
-    // Add default example file
-    this.createWahyFile({
-      name: "مثال_أول.wahy",
-      content: `افتح صفحة "موقعي الأول"
-
-أضف عنوان "مرحباً بالعالم"
-أضف فقرة "هذا مثال على استخدام لغة وحي لإنشاء صفحات الويب باللغة العربية"
-
-غيّر لون_الخلفية إلى "lightblue"
-غيّر لون_النص إلى "darkblue"
-
-ابدأ قائمة
-أضف عنصر "البساطة في الاستخدام"
-أضف عنصر "دعم اللغة العربية"
-أضف عنصر "سهولة التعلم"
-أنهِ قائمة
-
-أضف فقرة "يمكنك إضافة المزيد من المحتوى هنا"
-أضف رابط "زيارة موقع GitHub" "https://github.com"
-
-أغلق صفحة`
-    });
-  }
-
+export class DatabaseStorage implements IStorage {
   async getWahyFile(id: number): Promise<WahyFile | undefined> {
-    return this.wahyFiles.get(id);
+    const [file] = await db.select().from(wahyFiles).where(eq(wahyFiles.id, id));
+    return file || undefined;
   }
 
   async getWahyFileByName(name: string): Promise<WahyFile | undefined> {
-    return Array.from(this.wahyFiles.values()).find(
-      (file) => file.name === name,
-    );
+    const [file] = await db.select().from(wahyFiles).where(eq(wahyFiles.name, name));
+    return file || undefined;
   }
 
   async getAllWahyFiles(): Promise<WahyFile[]> {
-    return Array.from(this.wahyFiles.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(wahyFiles).orderBy(desc(wahyFiles.createdAt));
   }
 
   async createWahyFile(insertFile: InsertWahyFile): Promise<WahyFile> {
-    const id = this.currentId++;
-    const now = new Date();
-    const file: WahyFile = { 
-      ...insertFile, 
-      id, 
-      createdAt: now,
-      updatedAt: now
-    };
-    this.wahyFiles.set(id, file);
+    const [file] = await db
+      .insert(wahyFiles)
+      .values(insertFile)
+      .returning();
     return file;
   }
 
   async updateWahyFile(id: number, updates: Partial<InsertWahyFile>): Promise<WahyFile | undefined> {
-    const existing = this.wahyFiles.get(id);
-    if (!existing) return undefined;
-    
-    const updated: WahyFile = {
-      ...existing,
-      ...updates,
-      updatedAt: new Date()
-    };
-    this.wahyFiles.set(id, updated);
-    return updated;
+    const [file] = await db
+      .update(wahyFiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(wahyFiles.id, id))
+      .returning();
+    return file || undefined;
   }
 
   async deleteWahyFile(id: number): Promise<boolean> {
-    return this.wahyFiles.delete(id);
+    const result = await db.delete(wahyFiles).where(eq(wahyFiles.id, id));
+    return result.rowCount > 0;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
