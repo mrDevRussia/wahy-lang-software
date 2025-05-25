@@ -9,6 +9,7 @@
 const SecurityShield = require('./security-shield');
 const LicenseValidator = require('./license-validator');
 const WahyCryptoEngine = require('./crypto-engine');
+const PassKeyManager = require('./passkey-manager');
 const path = require('path');
 const { BrowserWindow } = require('electron');
 
@@ -23,6 +24,7 @@ class ProtectionManager {
         this.licenseValidator = null;
         this.securityShield = null;
         this.cryptoEngine = null;
+        this.passKeyManager = null;
         
         // حالة النظام
         this.systemStatus = {
@@ -60,6 +62,9 @@ class ProtectionManager {
             
             // تفعيل الدرع الأمني
             this.securityShield = new SecurityShield();
+            
+            // تهيئة مدير PassKey
+            this.passKeyManager = new PassKeyManager();
             
             // تسجيل المستمعين للأحداث
             this.registerEventListeners();
@@ -364,6 +369,124 @@ class ProtectionManager {
     }
 
     /**
+     * التحقق من PassKey
+     * @param {string} passkey المفتاح المدخل
+     * @returns {Object} نتيجة التحقق
+     */
+    validatePassKey(passkey) {
+        try {
+            if (!this.passKeyManager) {
+                return { valid: false, reason: 'نظام PassKey غير مهيأ' };
+            }
+
+            const validation = this.passKeyManager.validatePassKey(passkey);
+            
+            if (validation.valid) {
+                console.log('✅ تم قبول PassKey بنجاح');
+                
+                // تسجيل حدث الاستعادة
+                this.logSecurityEvent('passkey_recovery_successful', passkey.substring(0, 8));
+            } else {
+                console.log(`❌ فشل التحقق من PassKey: ${validation.reason}`);
+                
+                // تسجيل محاولة فاشلة
+                this.logSecurityEvent('passkey_recovery_failed', passkey.substring(0, 8));
+            }
+
+            return validation;
+
+        } catch (error) {
+            console.error('❌ خطأ في التحقق من PassKey:', error);
+            return { valid: false, reason: 'خطأ في النظام' };
+        }
+    }
+
+    /**
+     * استعادة النظام باستخدام PassKey
+     * @returns {boolean} نجاح الاستعادة
+     */
+    async restoreSystemWithPassKey() {
+        try {
+            console.log('🔄 بدء استعادة النظام...');
+
+            // إعادة تعيين حالة القفل
+            this.isSystemLocked = false;
+            this.systemStatus.protection = 'active';
+
+            // إعادة تفعيل وظائف النظام
+            global.wahyInterpreterDisabled = false;
+            global.fileSaveDisabled = false;
+            global.newProjectDisabled = false;
+
+            // إغلاق نافذة القفل
+            if (this.lockWindow && !this.lockWindow.isDestroyed()) {
+                this.lockWindow.destroy();
+                this.lockWindow = null;
+            }
+
+            // إظهار النافذة الرئيسية
+            if (this.mainWindow && !this.mainWindow.isDestroyed()) {
+                this.mainWindow.show();
+                this.mainWindow.focus();
+            }
+
+            // تسجيل حدث الاستعادة
+            this.logSecurityEvent('system_restored_via_passkey');
+
+            console.log('✅ تم استعادة النظام بنجاح');
+            return true;
+
+        } catch (error) {
+            console.error('❌ فشل في استعادة النظام:', error);
+            return false;
+        }
+    }
+
+    /**
+     * تعيين Discord webhook URL لنظام PassKey
+     * @param {string} webhookUrl رابط Discord webhook
+     */
+    setDiscordWebhook(webhookUrl) {
+        if (this.passKeyManager) {
+            this.passKeyManager.setDiscordWebhook(webhookUrl);
+            console.log('✅ تم تكوين Discord webhook لنظام PassKey');
+        }
+    }
+
+    /**
+     * الحصول على معلومات نظام PassKey
+     * @returns {Object} معلومات النظام
+     */
+    getPassKeyInfo() {
+        if (this.passKeyManager) {
+            return this.passKeyManager.getSystemInfo();
+        }
+        return { active: false, error: 'نظام PassKey غير مهيأ' };
+    }
+
+    /**
+     * تسجيل أحداث الأمان
+     * @param {string} event نوع الحدث
+     * @param {string} details تفاصيل إضافية
+     */
+    logSecurityEvent(event, details = '') {
+        try {
+            const logPath = path.join(__dirname, '..', 'security.log');
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                event: event,
+                details: details,
+                systemLocked: this.isSystemLocked
+            };
+            
+            const fs = require('fs');
+            fs.appendFileSync(logPath, JSON.stringify(logEntry) + '\n');
+        } catch (error) {
+            // تجاهل أخطاء التسجيل
+        }
+    }
+
+    /**
      * تنظيف الموارد
      */
     cleanup() {
@@ -372,6 +495,11 @@ class ProtectionManager {
         // تنظيف مدقق التراخيص
         if (this.licenseValidator) {
             this.licenseValidator.cleanup();
+        }
+        
+        // تنظيف مدير PassKey
+        if (this.passKeyManager) {
+            this.passKeyManager.cleanup();
         }
         
         // إغلاق نافذة القفل

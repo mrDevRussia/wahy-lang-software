@@ -355,5 +355,61 @@ ipcMain.handle('interpret-wahy-code', async (event, code) => {
   }
 });
 
+// معالجات PassKey للاستعادة الطارئة
+ipcMain.handle('validate-passkey', async (event, passkey) => {
+  try {
+    if (!protectionManager) {
+      return { valid: false, reason: 'نظام الحماية غير مهيأ' };
+    }
+    
+    return protectionManager.validatePassKey(passkey);
+  } catch (error) {
+    console.error('خطأ في التحقق من PassKey:', error);
+    return { valid: false, reason: 'خطأ في النظام' };
+  }
+});
+
+ipcMain.handle('restore-system-with-passkey', async () => {
+  try {
+    if (!protectionManager) {
+      return false;
+    }
+    
+    return await protectionManager.restoreSystemWithPassKey();
+  } catch (error) {
+    console.error('خطأ في استعادة النظام:', error);
+    return false;
+  }
+});
+
+// معالج لتكوين Discord webhook
+ipcMain.handle('set-discord-webhook', async (event, webhookUrl) => {
+  try {
+    if (!protectionManager) {
+      return { success: false, error: 'نظام الحماية غير مهيأ' };
+    }
+    
+    protectionManager.setDiscordWebhook(webhookUrl);
+    return { success: true, message: 'تم تكوين Discord webhook بنجاح' };
+  } catch (error) {
+    console.error('خطأ في تكوين Discord webhook:', error);
+    return { success: false, error: 'فشل في تكوين Discord webhook' };
+  }
+});
+
+// معالج للحصول على معلومات PassKey
+ipcMain.handle('get-passkey-info', async () => {
+  try {
+    if (!protectionManager) {
+      return { active: false, error: 'نظام الحماية غير مهيأ' };
+    }
+    
+    return protectionManager.getPassKeyInfo();
+  } catch (error) {
+    console.error('خطأ في الحصول على معلومات PassKey:', error);
+    return { active: false, error: 'خطأ في النظام' };
+  }
+});
+
 // تشغيل التطبيق
 app.whenReady().then(createMainWindow);

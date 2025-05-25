@@ -14,6 +14,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
         });
     },
     
+    // التحقق من PassKey
+    validatePassKey: (passkey) => {
+        return ipcRenderer.invoke('validate-passkey', passkey);
+    },
+    
+    // استعادة النظام بعد التحقق الناجح
+    restoreSystem: () => {
+        return ipcRenderer.invoke('restore-system-with-passkey');
+    },
+    
     // إزالة المستمع
     removeAllListeners: (channel) => {
         ipcRenderer.removeAllListeners(channel);

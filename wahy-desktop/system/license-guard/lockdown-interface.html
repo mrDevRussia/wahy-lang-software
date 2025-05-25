@@ -210,10 +210,35 @@
             </ol>
         </div>
 
+        <div class="passkey-section">
+            <h3>🔑 استعادة النظام الطارئة</h3>
+            <p>إذا كان لديك PassKey صالح، يمكنك استعادة النظام:</p>
+            <div class="passkey-input-container">
+                <input type="text" id="passkey-input" placeholder="أدخل PassKey (28 حرف + 4 أرقام)" maxlength="33" 
+                       style="width: 100%; padding: 15px; margin: 10px 0; border: 2px solid rgba(255,255,255,0.3); 
+                              background: rgba(255,255,255,0.1); color: white; border-radius: 10px; 
+                              font-family: 'Courier New', monospace; font-size: 16px; text-align: center;">
+                <button id="validate-passkey" onclick="validatePassKey()" 
+                        style="width: 100%; padding: 15px; background: linear-gradient(45deg, #4CAF50, #45a049); 
+                               color: white; border: none; border-radius: 10px; font-size: 16px; 
+                               cursor: pointer; margin-top: 10px;">
+                    🔓 التحقق من المفتاح
+                </button>
+            </div>
+            <div id="passkey-result" style="margin-top: 15px; padding: 10px; border-radius: 8px; display: none;"></div>
+            <div class="passkey-info">
+                <p style="font-size: 0.9em; opacity: 0.8; margin-top: 15px;">
+                    💡 يتم إنتاج PassKey جديد كل ساعة في قناة Discord المخصصة<br>
+                    📢 تحقق من الإشعارات الأخيرة للحصول على المفتاح الحالي
+                </p>
+            </div>
+        </div>
+
         <div class="contact-info">
             <h4>🔗 معلومات الدعم:</h4>
             <p>الموقع الرسمي: github.com/wahy-lang/wahy-desktop</p>
             <p>البريد الإلكتروني: support@wahy-lang.org</p>
+            <p>قناة Discord: يتم توفير الرابط مع التطبيق</p>
             <p class="blinking">⚠️ هذا التطبيق محمي بحقوق الطبع والنشر</p>
         </div>
     </div>
@@ -303,6 +328,104 @@
         window.addEventListener('beforeunload', function(e) {
             e.preventDefault();
             e.returnValue = '';
+        });
+
+        // دالة التحقق من PassKey
+        async function validatePassKey() {
+            const input = document.getElementById('passkey-input');
+            const button = document.getElementById('validate-passkey');
+            const result = document.getElementById('passkey-result');
+            
+            const passkey = input.value.trim().toUpperCase();
+            
+            // تحقق أولي من التنسيق
+            if (!passkey) {
+                showPassKeyResult('❌ يرجى إدخال PassKey', 'error');
+                return;
+            }
+            
+            if (passkey.length !== 33 || !passkey.includes('-')) {
+                showPassKeyResult('❌ تنسيق PassKey غير صحيح (يجب أن يكون 28 حرف + "-" + 4 أرقام)', 'error');
+                return;
+            }
+
+            // تعطيل الزر أثناء التحقق
+            button.disabled = true;
+            button.textContent = '🔄 جاري التحقق...';
+            
+            try {
+                // إرسال للنظام للتحقق
+                if (window.electronAPI && window.electronAPI.validatePassKey) {
+                    const validation = await window.electronAPI.validatePassKey(passkey);
+                    
+                    if (validation.valid) {
+                        showPassKeyResult('✅ تم قبول المفتاح! جاري استعادة النظام...', 'success');
+                        
+                        // انتظار ثانيتين ثم استعادة النظام
+                        setTimeout(async () => {
+                            await window.electronAPI.restoreSystem();
+                            showPassKeyResult('🎉 تم استعادة النظام بنجاح!', 'success');
+                        }, 2000);
+                        
+                    } else {
+                        showPassKeyResult(`❌ فشل التحقق: ${validation.reason}`, 'error');
+                    }
+                } else {
+                    showPassKeyResult('❌ نظام التحقق غير متوفر', 'error');
+                }
+                
+            } catch (error) {
+                console.error('خطأ في التحقق من PassKey:', error);
+                showPassKeyResult('❌ حدث خطأ أثناء التحقق من المفتاح', 'error');
+            } finally {
+                // إعادة تفعيل الزر
+                button.disabled = false;
+                button.textContent = '🔓 التحقق من المفتاح';
+            }
+        }
+
+        // دالة عرض نتيجة التحقق
+        function showPassKeyResult(message, type) {
+            const result = document.getElementById('passkey-result');
+            
+            result.textContent = message;
+            result.style.display = 'block';
+            
+            if (type === 'success') {
+                result.style.background = 'rgba(76, 175, 80, 0.3)';
+                result.style.borderLeft = '5px solid #4CAF50';
+                result.style.color = '#E8F5E8';
+            } else if (type === 'error') {
+                result.style.background = 'rgba(244, 67, 54, 0.3)';
+                result.style.borderLeft = '5px solid #f44336';
+                result.style.color = '#FFEBEE';
+            }
+            
+            // إخفاء الرسالة بعد 10 ثواني للأخطاء
+            if (type === 'error') {
+                setTimeout(() => {
+                    result.style.display = 'none';
+                }, 10000);
+            }
+        }
+
+        // تفعيل Enter key للتحقق
+        document.getElementById('passkey-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                validatePassKey();
+            }
+        });
+
+        // تنسيق تلقائي للمفتاح أثناء الكتابة
+        document.getElementById('passkey-input').addEventListener('input', function(e) {
+            let value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+            
+            // إضافة الشرطة تلقائياً بعد 28 حرف
+            if (value.length === 28 && !value.includes('-')) {
+                value = value.substring(0, 28) + '-' + value.substring(28);
+            }
+            
+            e.target.value = value;
         });
 
         console.log(`
