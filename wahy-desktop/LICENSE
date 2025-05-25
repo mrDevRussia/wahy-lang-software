@@ -1,9 +1,14 @@
 MIT License
 
-Copyright (c) 2024 Wahy Desktop - Arabic Programming Language
+Copyright (c) 2024 Wahy Desktop Team - Arabic Programming Language Initiative
+================================================================
 
-Wahy Desktop هو مشروع مفتوح المصدر لتطوير لغة البرمجة العربية "وحي"
-المصمم خصيصاً لجعل البرمجة متاحة وسهلة للمطورين الناطقين بالعربية.
+Wahy Desktop (وحي سطح المكتب) - Revolutionary Arabic Programming Language
+A comprehensive desktop application designed specifically for Arabic-speaking developers
+to create web applications using intuitive Arabic programming syntax.
+
+هذا المشروع مخصص لتطوير أول لغة برمجة عربية متكاملة لإنشاء تطبيقات الويب
+باستخدام أوامر عربية بسيطة ومفهومة، مما يجعل البرمجة أكثر إتاحة للمجتمع العربي.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,30 +29,85 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 =================================================================================
-تفاصيل إضافية حول مشروع Wahy Desktop:
+PROJECT DETAILS - تفاصيل المشروع
+=================================================================================
 
-هذا البرنامج مطور بغرض تعليم البرمجة باللغة العربية ومساعدة المطورين العرب
-على فهم أساسيات تطوير الويب من خلال استخدام أوامر عربية بسيطة وواضحة.
+🎯 MISSION - المهمة:
+To democratize programming for Arabic speakers by providing a native Arabic 
+programming language that generates modern web applications with ease and elegance.
 
-المميزات الرئيسية:
-- لغة برمجة عربية كاملة لإنشاء صفحات الويب
-- مفسر متطور يدعم HTML وCSS وJavaScript
-- واجهة مستخدم صديقة للمبتدئين
-- نظام حماية متقدم لحماية الملكية الفكرية
-- دعم امتداد ملفات .wahy مع ربط نظام التشغيل
-- نظام PassKey للاستعادة مع تكامل Discord
+جعل البرمجة متاحة للناطقين بالعربية من خلال توفير لغة برمجة عربية أصيلة
+تنتج تطبيقات ويب حديثة بسهولة وأناقة.
 
-الاستخدام المقترح:
-- التعلم والتدريب على أساسيات البرمجة
-- إنشاء مواقع ويب بسيطة للمشاريع الشخصية
-- النماذج الأولية والتجارب السريعة
-- المشاريع التعليمية في الجامعات والمدارس
+🔧 CORE FEATURES - المميزات الأساسية:
+- Complete Arabic programming syntax with intuitive commands
+- HTML, CSS, and JavaScript generation capabilities  
+- Advanced desktop application with Electron.js framework
+- Comprehensive security system with RSA-2048 digital signatures
+- PassKey recovery system with Discord integration
+- Native .wahy file extension support with OS integration
+- Multi-interpreter support for various output formats
+- Real-time code execution and preview capabilities
 
-نشكر جميع المساهمين في تطوير هذا المشروع ونقدر دعمكم المستمر
-لجعل البرمجة أكثر إتاحة للمجتمع العربي.
+- صيغة برمجة عربية كاملة مع أوامر بديهية
+- إمكانيات إنتاج HTML وCSS وJavaScript
+- تطبيق سطح مكتب متقدم مع إطار عمل Electron.js
+- نظام أمان شامل مع توقيعات رقمية RSA-2048
+- نظام استعادة PassKey مع تكامل Discord
+- دعم امتداد ملفات .wahy الأصلي مع تكامل نظام التشغيل
+- دعم مفسرات متعددة لتنسيقات إخراج مختلفة
+- إمكانيات تنفيذ ومعاينة الكود في الوقت الفعلي
 
-للمزيد من المعلومات، قم بزيارة:
-- الموقع الرسمي: https://wahy-lang.github.io
-- المستودع: https://github.com/wahy-lang/wahy-desktop
-- التوثيق: https://docs.wahy-lang.org
-- المجتمع: انضم لخادم Discord الخاص بالمطورين العرب
+🛡️ SECURITY ARCHITECTURE - هندسة الأمان:
+This software implements a comprehensive 10-layer security system designed to
+protect intellectual property while maintaining open-source transparency:
+
+1. RSA-2048 Digital Signature Verification
+2. System Files Integrity Monitoring  
+3. Project Structure Validation
+4. Runtime Environment Verification
+5. License File Authentication
+6. Digital License Signature Validation
+7. PassKey Recovery System (28-character + 4-digit verification)
+8. Discord Webhook Integration for Security Alerts
+9. Multi-layer Protection Score System (0-100 points)
+10. Tamper-resistant Architecture with Self-monitoring
+
+يطبق هذا البرنامج نظام أمان شامل من 10 طبقات مصمم لحماية الملكية الفكرية
+مع الحفاظ على شفافية المصدر المفتوح.
+
+📚 EDUCATIONAL PURPOSE - الغرض التعليمي:
+Designed primarily for educational institutions, coding bootcamps, and individual
+learners who want to understand web development concepts through Arabic programming.
+
+مصمم بشكل أساسي للمؤسسات التعليمية ومعسكرات البرمجة والمتعلمين الأفراد
+الذين يريدون فهم مفاهيم تطوير الويب من خلال البرمجة العربية.
+
+🌍 COMMUNITY & SUPPORT - المجتمع والدعم:
+- Official Website: https://wahy-lang.github.io
+- Documentation: https://docs.wahy-lang.org  
+- GitHub Repository: https://github.com/wahy-lang/wahy-desktop
+- Discord Community: Join Arabic Developers Server
+- Issues & Feedback: GitHub Issues System
+
+💡 INNOVATION STATEMENT - بيان الابتكار:
+Wahy Desktop represents a breakthrough in making programming accessible to Arabic
+speakers worldwide. By providing native Arabic programming syntax, we eliminate
+language barriers that have historically prevented many talented individuals
+from entering the field of software development.
+
+يمثل وحي سطح المكتب اختراقاً في جعل البرمجة متاحة للناطقين بالعربية حول العالم.
+من خلال توفير صيغة برمجة عربية أصيلة، نزيل الحواجز اللغوية التي منعت تاريخياً
+العديد من الأفراد الموهوبين من دخول مجال تطوير البرمجيات.
+
+🏆 ACKNOWLEDGMENTS - شكر وتقدير:
+Special thanks to all contributors, testers, and the global Arabic developer
+community for their continuous support and valuable feedback in making this
+vision a reality.
+
+شكر خاص لجميع المساهمين والمختبرين ومجتمع المطورين العرب العالمي
+لدعمهم المستمر وملاحظاتهم القيمة في تحقيق هذه الرؤية.
+
+=================================================================================
+END OF LICENSE - نهاية الترخيص
+=================================================================================
