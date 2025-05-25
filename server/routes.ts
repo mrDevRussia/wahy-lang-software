@@ -130,6 +130,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Download Wahy Desktop
+  app.post("/api/download/wahy-desktop", async (req, res) => {
+    try {
+      const archiver = require('archiver');
+      const path = require('path');
+      const fs = require('fs');
+      
+      const wahyDesktopPath = path.join(process.cwd(), 'wahy-desktop');
+      
+      // التحقق من وجود المجلد
+      if (!fs.existsSync(wahyDesktopPath)) {
+        return res.status(404).json({ error: 'مجلد wahy-desktop غير موجود' });
+      }
+
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', 'attachment; filename="Wahy-Desktop-Alpha-v1.0.zip"');
+
+      const archive = archiver('zip', { zlib: { level: 9 } });
+      
+      archive.on('error', (err) => {
+        console.error('Archive error:', err);
+        res.status(500).end();
+      });
+
+      archive.pipe(res);
+      
+      // إضافة مجلد wahy-desktop بالكامل مع استثناء الملفات غير المرغوبة
+      archive.directory(wahyDesktopPath, false, (entry) => {
+        // تجاهل ملفات node_modules وملفات النظام المخفية وملفات التوزيع الكبيرة
+        if (entry.name.includes('node_modules') || 
+            entry.name.startsWith('.') || 
+            entry.name.includes('.log') || 
+            entry.name.includes('.tmp') ||
+            entry.name.includes('dist/win-unpacked') ||
+            entry.name.endsWith('.zip')) {
+          return false;
+        }
+        return entry;
+      });
+
+      await archive.finalize();
+    } catch (error) {
+      console.error("Error creating wahy-desktop archive:", error);
+      res.status(500).json({ error: 'خطأ في تحميل البرنامج' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -19,12 +19,32 @@ import {
 import { Link } from "wouter";
 
 export default function UserGuide() {
-  const downloadWahyDesktop = () => {
-    // إنشاء رابط تحميل مباشر لمجلد wahy-desktop
-    const link = document.createElement('a');
-    link.href = '/wahy-desktop.zip'; // سيتم إنشاؤه لاحقاً
-    link.download = 'Wahy-Desktop-Alpha.zip';
-    link.click();
+  const downloadWahyDesktop = async () => {
+    try {
+      // طلب إنشاء أرشيف wahy-desktop من الخادم
+      const response = await fetch('/api/download/wahy-desktop', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'Wahy-Desktop-Alpha-v1.0.zip';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } else {
+        alert('عذراً، حدث خطأ في التحميل. يرجى المحاولة لاحقاً.');
+      }
+    } catch (error) {
+      alert('عذراً، حدث خطأ في التحميل. يرجى المحاولة لاحقاً.');
+    }
   };
 
   return (
