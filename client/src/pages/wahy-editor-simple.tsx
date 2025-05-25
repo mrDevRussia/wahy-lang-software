@@ -97,9 +97,9 @@ export default function WahyEditorSimple() {
 
   // Load file content when file changes
   useEffect(() => {
-    if (currentFile && typeof currentFile === 'object' && 'content' in currentFile) {
-      setCode(currentFile.content as string);
-      setFileName(currentFile.name as string);
+    if (currentFile && typeof currentFile === 'object' && 'content' in currentFile && 'name' in currentFile) {
+      setCode((currentFile as any).content);
+      setFileName((currentFile as any).name);
     }
   }, [currentFile]);
 
@@ -310,7 +310,7 @@ export default function WahyEditorSimple() {
                   fontSize: 14,
                   lineNumbers: 'on',
                   wordWrap: 'on',
-                  rtl: true,
+
                 }}
               />
             </div>
