@@ -9,7 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useWahyInterpreter } from "@/hooks/use-wahy-interpreter";
 import { WahyCommands } from "@/lib/wahy-commands";
 import MonacoEditor from "@/components/ui/monaco-editor";
-import { WahyCommandsPalette } from "@/components/WahyCommandsPalette";
+
 import { 
   Play, 
   Save, 
@@ -475,6 +475,8 @@ export default function WahyEditor() {
             </div>
           </div>
         </main>
+          </div>
+        </div>
       </div>
     </div>
   );

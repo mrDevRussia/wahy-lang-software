@@ -581,7 +581,7 @@ class EnhancedWahyCommands {
 
       // أوامر المحتوى
       'أضف_عنوان': this.addHeading,
-      'أضف': this.addHeading,
+      'أضف': this.handleAdd,
       'عنوان': this.addHeading,
       'أضف_عنوان_فرعي': this.addSubheading,
       'عنوان_فرعي': this.addSubheading,
@@ -667,6 +667,32 @@ class EnhancedWahyCommands {
     const text = args[0] || '';
     const level = parseInt(args[1]) || 1;
     generator.addHeading(text, level);
+  };
+
+  // معالج عام للأمر "أضف" 
+  private handleAdd = (args: string[], generator: EnhancedWahyGenerator) => {
+    // تحديد نوع العنصر المراد إضافته
+    const elementType = args[0] || '';
+    const text = args[1] || '';
+    
+    switch(elementType) {
+      case 'عنوان':
+        generator.addHeading(text);
+        break;
+      case 'فقرة':
+        generator.addParagraph(text);
+        break;
+      case 'رابط':
+        const url = args[2] || '#';
+        generator.addLink(text, url);
+        break;
+      case 'صورة':
+        const alt = args[2] || 'صورة';
+        generator.addImage(text, alt);
+        break;
+      default:
+        generator.addParagraph(text);
+    }
   };
 
   private addSubheading = (args: string[], generator: EnhancedWahyGenerator) => {
