@@ -556,9 +556,12 @@ class EnhancedWahyGenerator {
 
   // تنظيف HTML
   private escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }
 
@@ -570,9 +573,11 @@ class EnhancedWahyCommands {
     this.commandMap = {
       // أوامر الصفحة
       'افتح_صفحة': this.openPage,
+      'افتح': this.openPage,
       'صفحة': this.openPage,
       'أغلق_صفحة': this.closePage,
       'اغلق_صفحة': this.closePage,
+      'أغلق': this.closePage,
 
       // أوامر المحتوى
       'أضف_عنوان': this.addHeading,
