@@ -183,6 +183,21 @@ export default function WahyEditor() {
     }
   };
 
+  const handleSuggestionSelect = (suggestion: any) => {
+    const lines = code.split('\n');
+    const currentLineIndex = lines.length - 1;
+    const currentLine = lines[currentLineIndex] || '';
+    
+    // إضافة الاقتراح في نهاية الكود
+    const newCode = code + (code.endsWith('\n') ? '' : '\n') + suggestion.insertText;
+    setCode(newCode);
+    
+    toast({
+      title: "تم إدراج الاقتراح",
+      description: `تمت إضافة: ${suggestion.text}`,
+    });
+  };
+
   const lineCount = code ? code.split('\n').length : 0;
   const charCount = code ? code.length : 0;
 
@@ -287,6 +302,16 @@ export default function WahyEditor() {
               <Plus className="h-4 w-4 ml-2" />
               ملف جديد
             </Button>
+          </div>
+
+          {/* Smart Suggestions */}
+          <div className="p-4 border-b border-slate-200">
+            <SmartSuggestions
+              suggestions={suggestions}
+              userPatterns={userPatterns}
+              isAnalyzing={isAnalyzing}
+              onSuggestionSelect={handleSuggestionSelect}
+            />
           </div>
 
           {/* Command Reference */}
