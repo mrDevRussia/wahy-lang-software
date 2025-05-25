@@ -1,0 +1,12 @@
+{
+  "discordWebhookUrl": "DISCORD_WEBHOOK_URL",
+  "keyValidityHours": 1,
+  "keyHistory": [],
+  "lastUpdate": "2024-01-20T16:46:00.000Z",
+  "systemEnabled": true,
+  "channelInfo": {
+    "description": "قناة Discord المخصصة لإرسال مفاتيح PassKey الطارئة",
+    "updateFrequency": "كل ساعة",
+    "keyFormat": "28 حرف + 4 أرقام تحقق"
+  }
+}
