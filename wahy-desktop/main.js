@@ -34,6 +34,23 @@ function createMainWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
     
+    // فتح ملف من سطر الأوامر إذا تم تمريره
+    const fileToOpen = process.argv.find(arg => arg.endsWith('.wahy'));
+    if (fileToOpen && fs.existsSync(fileToOpen)) {
+      setTimeout(() => {
+        try {
+          const content = fs.readFileSync(fileToOpen, 'utf8');
+          mainWindow.webContents.send('file-opened', {
+            path: fileToOpen,
+            content: content,
+            name: path.basename(fileToOpen)
+          });
+        } catch (error) {
+          console.error('خطأ في فتح الملف:', error);
+        }
+      }, 1000);
+    }
+    
     // فتح أدوات المطور في وضع التطوير
     if (process.argv.includes('--dev')) {
       mainWindow.webContents.openDevTools();
