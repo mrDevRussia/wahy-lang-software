@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الحماية - وحي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .lockdown-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lock-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .main-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .error-details {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .error-code {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 15px;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: right;
+            line-height: 1.8;
+        }
+
+        .instructions h3 {
+            margin-bottom: 15px;
+            color: #ffd93d;
+        }
+
+        .instructions ol {
+            text-align: right;
+            padding-right: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+
+        .wahy-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+
+        .security-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+
+        .blinking {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="lockdown-container">
+        <div class="wahy-logo">🔒 وَحي - نظام الحماية</div>
+        
+        <div class="lock-icon">🛡️</div>
+        
+        <h1 class="main-title">تم تعطيل النظام</h1>
+        
+        <p class="subtitle">
+            تم اكتشاف تلاعب في ملفات النظام أو التراخيص.<br>
+            لغة وحي لم تعد قابلة للاستخدام على هذا الجهاز.
+        </p>
+
+        <div class="error-details">
+            <h3>🚨 تفاصيل المشكلة:</h3>
+            <p id="error-message">تم اكتشاف خرق أمني في النظام</p>
+            <div class="error-code" id="error-code">
+                ERROR_CODE: SECURITY_BREACH_DETECTED<br>
+                TIMESTAMP: <span id="timestamp"></span><br>
+                SYSTEM_ID: <span id="system-id"></span>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 للحصول على المساعدة:</h3>
+            <ol>
+                <li>تأكد من تحميل النسخة الأصلية من المصدر الرسمي</li>
+                <li>تجنب تعديل ملفات النظام أو التراخيص</li>
+                <li>قم بإعادة تثبيت التطبيق من المصدر الرسمي</li>
+                <li>تواصل مع فريق الدعم في حالة استمرار المشكلة</li>
+            </ol>
+        </div>
+
+        <div class="contact-info">
+            <h4>🔗 معلومات الدعم:</h4>
+            <p>الموقع الرسمي: github.com/wahy-lang/wahy-desktop</p>
+            <p>البريد الإلكتروني: support@wahy-lang.org</p>
+            <p class="blinking">⚠️ هذا التطبيق محمي بحقوق الطبع والنشر</p>
+        </div>
+    </div>
+
+    <div class="security-info">
+        Wahy Desktop Security System v1.0 | Protected by Advanced Encryption
+    </div>
+
+    <script>
+        // إنشاء جزيئات متحركة في الخلفية
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // تحديث الطوابع الزمنية
+        function updateTimestamp() {
+            const timestampElement = document.getElementById('timestamp');
+            if (timestampElement) {
+                timestampElement.textContent = new Date().toISOString();
+            }
+        }
+
+        // تحديث معرف النظام
+        function updateSystemId() {
+            const systemIdElement = document.getElementById('system-id');
+            if (systemIdElement) {
+                // توليد معرف عشوائي للعرض
+                const randomId = Math.random().toString(36).substring(2, 15);
+                systemIdElement.textContent = randomId.toUpperCase();
+            }
+        }
+
+        // تحديث رسالة الخطأ من البيانات المرسلة
+        function updateErrorMessage(data) {
+            const errorMessageElement = document.getElementById('error-message');
+            if (errorMessageElement && data && data.message) {
+                errorMessageElement.textContent = data.message;
+            }
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            updateTimestamp();
+            updateSystemId();
+            
+            // تحديث الطابع الزمني كل ثانية
+            setInterval(updateTimestamp, 1000);
+            
+            // استقبال بيانات من النظام الرئيسي
+            if (typeof window !== 'undefined' && window.electronAPI) {
+                window.electronAPI.onSystemLocked((data) => {
+                    updateErrorMessage(data);
+                });
+            }
+        });
+
+        // منع النقر الأيمن والاختصارات
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            // منع F12, Ctrl+Shift+I, Ctrl+U وغيرها
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+            }
+        });
+
+        // منع محاولة إغلاق النافذة
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        console.log(`
+🔒 Wahy Desktop Security System
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️  النظام معطل بسبب خرق أمني
+⚠️  يُمنع منعاً باتاً محاولة تجاوز هذا النظام
+⚠️  جميع المحاولات مُسجلة ومراقبة
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        `);
+    </script>
+</body>
+</html>
