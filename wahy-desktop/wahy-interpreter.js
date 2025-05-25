@@ -3,6 +3,17 @@
  * مفسر لغة وحي للبرمجة العربية
  */
 
+// نواة التحقق الأمنية
+const verificationCore = require('./system/license-guard/verification-core');
+
+// التحقق الأمني المستمر
+let _securityCheck = null;
+try {
+  _securityCheck = verificationCore.quickCheck();
+} catch (error) {
+  _securityCheck = false;
+}
+
 class WahyInterpreter {
   constructor() {
     this.htmlParts = [];

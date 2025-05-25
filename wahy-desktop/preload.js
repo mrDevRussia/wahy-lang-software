@@ -5,6 +5,24 @@
 
 const { contextBridge, ipcRenderer } = require('electron');
 
+// نواة التحقق المشفرة
+const verificationCore = require('./system/license-guard/verification-core');
+
+// التحقق الأولي من سلامة النظام
+(() => {
+  try {
+    const quickCheck = verificationCore.quickCheck();
+    if (!quickCheck) {
+      console.warn('⚠️ فشل التحقق السريع من النظام');
+      // منع تحميل preload في حالة فشل التحقق
+      throw new Error('System verification failed');
+    }
+  } catch (error) {
+    console.error('❌ خطأ في التحقق من النظام:', error);
+    process.exit(1);
+  }
+})();
+
 // تصدير API آمن للواجهة
 contextBridge.exposeInMainWorld('wahyAPI', {
   // عمليات الملفات
