@@ -37,7 +37,7 @@ export abstract class BaseInterpreter {
   }
 
   abstract interpret(code: string): InterpretationResult;
-  abstract getType(): 'html' | 'css' | 'javascript' | 'python';
+  abstract getType(): 'html' | 'css' | 'javascript' | 'python' | 'mixed';
 
   protected reset() {
     this.context = {

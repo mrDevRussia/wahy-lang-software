@@ -1,8 +1,23 @@
+/**
+ * Wahy Language Interpreter - Enhanced Multi-Type Support
+ * مفسر لغة وحي المحسن - دعم متعدد الأنواع
+ */
+
+import { MultiInterpreter } from './interpreters/multi-interpreter';
+import { HTMLInterpreter } from './interpreters/html-interpreter';
+import { CSSInterpreter } from './interpreters/css-interpreter';
+import { JavaScriptInterpreter } from './interpreters/javascript-interpreter';
+
 interface InterpretationResult {
   success: boolean;
   html?: string;
+  css?: string;
+  javascript?: string;
+  combinedOutput?: string;
   error?: string;
   lineNumber?: number;
+  type?: 'html' | 'css' | 'javascript' | 'mixed';
+  warnings?: string[];
 }
 
 class WahyHTMLGenerator {
