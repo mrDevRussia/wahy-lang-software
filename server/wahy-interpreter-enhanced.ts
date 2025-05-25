@@ -581,6 +581,7 @@ class EnhancedWahyCommands {
 
       // أوامر المحتوى
       'أضف_عنوان': this.addHeading,
+      'أضف': this.addHeading,
       'عنوان': this.addHeading,
       'أضف_عنوان_فرعي': this.addSubheading,
       'عنوان_فرعي': this.addSubheading,
@@ -624,11 +625,15 @@ class EnhancedWahyCommands {
 
       // أوامر التنسيق
       'غيّر_لون_الخلفية': this.changeBackgroundColor,
+      'غيّر': this.changeBackgroundColor,
       'لون_الخلفية': this.changeBackgroundColor,
       'غيّر_لون_النص': this.changeTextColor,
       'لون_النص': this.changeTextColor,
       'غيّر_الخط': this.changeFont,
       'الخط': this.changeFont,
+      'وسّط_النص': this.centerText,
+      'وسط_النص': this.centerText,
+      'وسّط': this.centerText,
 
       // أوامر المتغيرات والبرمجة
       'اجعل': this.createVariable,
@@ -765,6 +770,10 @@ class EnhancedWahyCommands {
   private changeFont = (args: string[], generator: EnhancedWahyGenerator) => {
     const font = args[0] || 'Arial';
     generator.changeFont(font);
+  };
+
+  private centerText = (args: string[], generator: EnhancedWahyGenerator) => {
+    generator.addStyle('body', 'text-align', 'center');
   };
 
   private createVariable = (args: string[], generator: EnhancedWahyGenerator) => {

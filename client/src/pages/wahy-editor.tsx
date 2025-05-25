@@ -9,6 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useWahyInterpreter } from "@/hooks/use-wahy-interpreter";
 import { WahyCommands } from "@/lib/wahy-commands";
 import MonacoEditor from "@/components/ui/monaco-editor";
+import { WahyCommandsPalette } from "@/components/WahyCommandsPalette";
 import { 
   Play, 
   Save, 
@@ -226,27 +227,30 @@ export default function WahyEditor() {
       </header>
 
       <div className="flex flex-1 h-0">
-        {/* Sidebar */}
-        <aside className="w-80 bg-white border-l border-slate-200 flex flex-col">
-          {/* File Explorer */}
-          <div className="p-4 border-b border-slate-200">
-            <h3 className="text-sm font-semibold text-slate-700 mb-3">الملفات</h3>
-            <div className="space-y-2">
-              {files.map((file: WahyFile) => (
-                <div
-                  key={file.id}
-                  onClick={() => handleFileSelect(file)}
-                  className={`flex items-center space-x-2 space-x-reverse p-2 rounded-lg cursor-pointer ${
-                    currentFileId === file.id 
-                      ? 'bg-blue-50 border border-blue-200' 
-                      : 'hover:bg-slate-50'
-                  }`}
-                >
-                  <FileCode className={`h-4 w-4 ${
-                    currentFileId === file.id ? 'text-blue-600' : 'text-slate-400'
-                  }`} />
-                  <span className={`text-sm font-medium flex-1 ${
-                    currentFileId === file.id ? 'text-blue-800' : 'text-slate-600'
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          <div className="flex flex-1 h-0">
+            {/* Sidebar with Files */}
+            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
+              {/* File Explorer */}
+              <div className="p-4 border-b border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-700 mb-3">الملفات</h3>
+                <div className="space-y-2">
+                  {files.map((file: WahyFile) => (
+                    <div
+                      key={file.id}
+                      onClick={() => handleFileSelect(file)}
+                      className={`flex items-center space-x-2 space-x-reverse p-2 rounded-lg cursor-pointer ${
+                        currentFileId === file.id 
+                          ? 'bg-blue-50 border border-blue-200' 
+                          : 'hover:bg-slate-50'
+                      }`}
+                    >
+                      <FileCode className={`h-4 w-4 ${
+                        currentFileId === file.id ? 'text-blue-600' : 'text-slate-400'
+                      }`} />
+                      <span className={`text-sm font-medium flex-1 ${
+                        currentFileId === file.id ? 'text-blue-800' : 'text-slate-600'
                   }`}>
                     {file.name}
                   </span>
