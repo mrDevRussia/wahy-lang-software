@@ -7,15 +7,23 @@ const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-let mainWindow;
+// نظام الحماية المتقدم
+const ProtectionManager = require('./system/license-guard/protection-manager');
 
-function createMainWindow() {
+let mainWindow;
+let protectionManager;
+
+async function createMainWindow() {
+  // تهيئة نظام الحماية قبل إنشاء النافذة
+  protectionManager = new ProtectionManager();
+  
   // إنشاء النافذة الرئيسية
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 800,
     minHeight: 600,
+    show: false, // إخفاء النافذة حتى اكتمال التحقق من الأمان
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -30,25 +38,50 @@ function createMainWindow() {
   // تحميل الصفحة الرئيسية
   mainWindow.loadFile('index.html');
 
-  // إظهار النافذة عند اكتمال التحميل
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    
-    // فتح ملف من سطر الأوامر إذا تم تمريره
-    const fileToOpen = process.argv.find(arg => arg.endsWith('.wahy'));
-    if (fileToOpen && fs.existsSync(fileToOpen)) {
-      setTimeout(() => {
-        try {
-          const content = fs.readFileSync(fileToOpen, 'utf8');
-          mainWindow.webContents.send('file-opened', {
-            path: fileToOpen,
-            content: content,
-            name: path.basename(fileToOpen)
-          });
-        } catch (error) {
-          console.error('خطأ في فتح الملف:', error);
-        }
-      }, 1000);
+  // التحقق من الأمان وإظهار النافذة
+  mainWindow.once('ready-to-show', async () => {
+    try {
+      console.log('🔐 بدء التحقق الأمني...');
+      
+      // تهيئة نظام الحماية
+      const securityValid = await protectionManager.initialize(mainWindow);
+      
+      if (!securityValid) {
+        console.error('❌ فشل التحقق الأمني - النظام مقفل');
+        return; // النافذة الرئيسية لن تظهر، ستظهر نافذة القفل
+      }
+      
+      // التحقق من إمكانية تشغيل النظام
+      if (!protectionManager.canSystemRun()) {
+        console.error('❌ النظام غير قابل للتشغيل');
+        return;
+      }
+      
+      console.log('✅ تم التحقق الأمني بنجاح');
+      
+      // إظهار النافذة الرئيسية
+      mainWindow.show();
+      
+      // فتح ملف من سطر الأوامر إذا تم تمريره
+      const fileToOpen = process.argv.find(arg => arg.endsWith('.wahy'));
+      if (fileToOpen && fs.existsSync(fileToOpen)) {
+        setTimeout(() => {
+          try {
+            const content = fs.readFileSync(fileToOpen, 'utf8');
+            mainWindow.webContents.send('file-opened', {
+              path: fileToOpen,
+              content: content,
+              name: path.basename(fileToOpen)
+            });
+          } catch (error) {
+            console.error('خطأ في فتح الملف:', error);
+          }
+        }, 1000);
+      }
+      
+    } catch (error) {
+      console.error('❌ خطأ في التحقق الأمني:', error);
+      await protectionManager.lockSystem('security_initialization_error');
     }
     
     // فتح أدوات المطور في وضع التطوير
@@ -192,6 +225,11 @@ function createMenu() {
 // معالجة أحداث IPC
 ipcMain.handle('save-file', async (event, content, filePath) => {
   try {
+    // التحقق من حالة الأمان قبل السماح بحفظ الملف
+    if (global.fileSaveDisabled || !protectionManager?.canSystemRun()) {
+      return { success: false, error: 'تم تعطيل حفظ الملفات لأسباب أمنية' };
+    }
+    
     let targetPath = filePath;
     
     if (!targetPath) {
@@ -268,5 +306,54 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', (event) => {
+  // تنظيف نظام الحماية
+  if (protectionManager) {
+    protectionManager.cleanup();
+  }
+  
   // يمكن إضافة فحص للملفات غير المحفوظة هنا
 });
+
+// معالجات IPC إضافية للأمان
+ipcMain.handle('get-system-status', async () => {
+  if (!protectionManager) {
+    return { error: 'نظام الحماية غير مهيأ' };
+  }
+  return protectionManager.getSystemStatus();
+});
+
+// معالج لإعادة تشغيل النظام (وضع التطوير فقط)
+ipcMain.handle('reset-security-system', async () => {
+  if (process.env.NODE_ENV === 'development' && protectionManager) {
+    protectionManager.resetSystem();
+    return { success: true, message: 'تم إعادة تشغيل نظام الحماية' };
+  }
+  return { success: false, error: 'غير مسموح في وضع الإنتاج' };
+});
+
+// معالج لتفسير الكود مع التحقق الأمني
+ipcMain.handle('interpret-wahy-code', async (event, code) => {
+  try {
+    // التحقق من حالة الأمان
+    if (global.wahyInterpreterDisabled || !protectionManager?.canSystemRun()) {
+      return { 
+        success: false, 
+        error: 'تم تعطيل مفسر وحي لأسباب أمنية' 
+      };
+    }
+
+    // تشغيل مفسر وحي الأصلي
+    const { interpretWahyCode } = require('./wahy-interpreter');
+    return interpretWahyCode(code);
+    
+  } catch (error) {
+    console.error('خطأ في تفسير الكود:', error);
+    return { 
+      success: false, 
+      error: 'خطأ في تفسير الكود: ' + error.message 
+    };
+  }
+});
+
+// تشغيل التطبيق
+app.whenReady().then(createMainWindow);
