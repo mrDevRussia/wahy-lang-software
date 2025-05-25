@@ -579,7 +579,7 @@ class EnhancedWahyCommands {
       'اغلق_صفحة': this.closePage,
       'أغلق': this.closePage,
 
-      // أوامر المحتوى
+      // أوامر المحتوى - دعم كامل للأوامر الطويلة والمختصرة
       'أضف_عنوان': this.addHeading,
       'أضف': this.handleAdd,
       'عنوان': this.addHeading,
@@ -604,12 +604,12 @@ class EnhancedWahyCommands {
       'أضف_عداد': this.addCounter,
       'عداد': this.addCounter,
 
-      // أوامر القوائم
+      // أوامر القوائم - دعم كامل للأوامر الطويلة والمختصرة
       'ابدأ_قائمة': this.startList,
-      'ابدأ': this.startList,
+      'ابدأ': this.handleStart,
       'أنهِ_قائمة': this.endList,
       'انهي_قائمة': this.endList,
-      'أنهِ': this.endList,
+      'أنهِ': this.handleEnd,
       'ابدأ_قائمة_مرقمة': this.startOrderedList,
       'أنهِ_قائمة_مرقمة': this.endList,
       'انهي_قائمة_مرقمة': this.endList,
@@ -825,6 +825,45 @@ class EnhancedWahyCommands {
     }
   };
 
+  // معالج عام للأمر "ابدأ"
+  private handleStart = (args: string[], generator: EnhancedWahyGenerator) => {
+    const startType = args[0] || '';
+    
+    switch(startType) {
+      case 'قائمة':
+        generator.startList();
+        break;
+      case 'قائمة_مرقمة':
+        generator.startOrderedList();
+        break;
+      case 'قسم':
+        const className = args[1];
+        generator.startSection(className);
+        break;
+      default:
+        // افتراضياً ابدأ قائمة
+        generator.startList();
+    }
+  };
+
+  // معالج عام للأمر "أنهِ"
+  private handleEnd = (args: string[], generator: EnhancedWahyGenerator) => {
+    const endType = args[0] || '';
+    
+    switch(endType) {
+      case 'قائمة':
+      case 'قائمة_مرقمة':
+        generator.endList();
+        break;
+      case 'قسم':
+        generator.endSection();
+        break;
+      default:
+        // افتراضياً أنهِ قائمة
+        generator.endList();
+    }
+  };
+
   private createVariable = (args: string[], generator: EnhancedWahyGenerator) => {
     const name = args[0] || '';
     const value = args[2] || '';
@@ -863,7 +902,50 @@ export class EnhancedWahyInterpreter {
       return null;
     }
 
-    // تحليل الأوامر بأنماط مختلفة
+    // دعم الأوامر الطويلة مثل "افتح صفحة" و "أضف عنوان"
+    const longCommandPatterns = [
+      // نمط: افتح صفحة "العنوان"
+      /^(افتح)\s+(صفحة)\s+"([^"]+)"$/,
+      // نمط: أضف عنوان "النص"
+      /^(أضف)\s+(عنوان|فقرة|رابط|صورة|عنصر)\s+"([^"]+)"\s*"?([^"]*)"?$/,
+      // نمط: غيّر لون_الخلفية إلى "القيمة"
+      /^(غيّر)\s+(لون_الخلفية|لون_النص|الخط)\s+(إلى)\s+"([^"]+)"$/,
+      // نمط: ابدأ قائمة
+      /^(ابدأ)\s+(قائمة|قائمة_مرقمة|قسم)$/,
+      // نمط: أنهِ قائمة
+      /^(أنهِ|انهي)\s+(قائمة|قائمة_مرقمة|قسم)$/,
+      // نمط: أغلق صفحة
+      /^(أغلق)\s+(صفحة)$/
+    ];
+
+    // تحقق من الأوامر الطويلة أولاً
+    for (const pattern of longCommandPatterns) {
+      const match = trimmedLine.match(pattern);
+      if (match) {
+        const [, mainCommand, subCommand, ...params] = match;
+        
+        if (mainCommand === 'افتح' && subCommand === 'صفحة') {
+          return { command: 'افتح', args: [params[0]] };
+        }
+        if (mainCommand === 'أضف') {
+          return { command: `أضف_${subCommand}`, args: params.filter(p => p) };
+        }
+        if (mainCommand === 'غيّر') {
+          return { command: `غيّر_${subCommand}`, args: [params[1]] };
+        }
+        if (mainCommand === 'ابدأ') {
+          return { command: `ابدأ_${subCommand}`, args: [] };
+        }
+        if (mainCommand === 'أنهِ' || mainCommand === 'انهي') {
+          return { command: `أنهِ_${subCommand}`, args: [] };
+        }
+        if (mainCommand === 'أغلق' && subCommand === 'صفحة') {
+          return { command: 'أغلق', args: [] };
+        }
+      }
+    }
+
+    // تحليل الأوامر المختصرة بأنماط مختلفة
     const patterns = [
       // نمط: أمر "معامل1" "معامل2"
       /^(\S+)\s+"([^"]+)"\s+"([^"]+)"$/,
