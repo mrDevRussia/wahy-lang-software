@@ -7,8 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useWahyInterpreter } from "@/hooks/use-wahy-interpreter";
+import { useSmartSuggestions } from "@/hooks/use-smart-suggestions";
 import { WahyCommands } from "@/lib/wahy-commands";
 import MonacoEditor from "@/components/ui/monaco-editor";
+import SmartSuggestions from "@/components/ui/smart-suggestions";
 import { 
   Play, 
   Save, 
@@ -40,6 +42,9 @@ export default function WahyEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const commands = new WahyCommands();
+  
+  // Smart suggestions hook
+  const { suggestions, userPatterns, isAnalyzing } = useSmartSuggestions(code, cursorPosition.column);
   
   // Fetch all files
   const { data: files = [], isLoading: filesLoading } = useQuery({
