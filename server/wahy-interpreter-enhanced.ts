@@ -606,8 +606,10 @@ class EnhancedWahyCommands {
 
       // أوامر القوائم
       'ابدأ_قائمة': this.startList,
+      'ابدأ': this.startList,
       'أنهِ_قائمة': this.endList,
       'انهي_قائمة': this.endList,
+      'أنهِ': this.endList,
       'ابدأ_قائمة_مرقمة': this.startOrderedList,
       'أنهِ_قائمة_مرقمة': this.endList,
       'انهي_قائمة_مرقمة': this.endList,
@@ -625,7 +627,7 @@ class EnhancedWahyCommands {
 
       // أوامر التنسيق
       'غيّر_لون_الخلفية': this.changeBackgroundColor,
-      'غيّر': this.changeBackgroundColor,
+      'غيّر': this.handleChange,
       'لون_الخلفية': this.changeBackgroundColor,
       'غيّر_لون_النص': this.changeTextColor,
       'لون_النص': this.changeTextColor,
@@ -800,6 +802,27 @@ class EnhancedWahyCommands {
 
   private centerText = (args: string[], generator: EnhancedWahyGenerator) => {
     generator.addStyle('body', 'text-align', 'center');
+  };
+
+  // معالج عام للأمر "غيّر"
+  private handleChange = (args: string[], generator: EnhancedWahyGenerator) => {
+    const changeType = args[0] || '';
+    const value = args[2] || args[1] || '';
+    
+    switch(changeType) {
+      case 'لون_الخلفية':
+        generator.changeBackgroundColor(value);
+        break;
+      case 'لون_النص':
+        generator.changeTextColor(value);
+        break;
+      case 'الخط':
+        generator.changeFont(value);
+        break;
+      default:
+        // افتراضياً غيّر لون الخلفية
+        generator.changeBackgroundColor(changeType);
+    }
   };
 
   private createVariable = (args: string[], generator: EnhancedWahyGenerator) => {
