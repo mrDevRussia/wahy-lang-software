@@ -144,36 +144,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'مجلد wahy-desktop غير موجود' });
       }
 
-      res.setHeader('Content-Type', 'application/zip');
-      res.setHeader('Content-Disposition', 'attachment; filename="Wahy-Desktop-Alpha-v1.0.zip"');
+      // تحديد headers بشكل صحيح
+      res.writeHead(200, {
+        'Content-Type': 'application/zip',
+        'Content-Disposition': 'attachment; filename="Wahy-Desktop-Alpha-v1.0.zip"',
+        'Cache-Control': 'no-cache'
+      });
 
-      const archive = archiver('zip', { zlib: { level: 9 } });
+      const archive = archiver('zip', { 
+        zlib: { level: 9 },
+        store: true
+      });
       
       archive.on('error', (err) => {
         console.error('Archive error:', err);
-        res.status(500).end();
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'خطأ في الأرشيف' });
+        }
       });
 
+      archive.on('warning', (err) => {
+        if (err.code === 'ENOENT') {
+          console.warn('Archive warning:', err);
+        } else {
+          throw err;
+        }
+      });
+
+      // ربط الأرشيف بـ response
       archive.pipe(res);
       
-      // إضافة مجلد wahy-desktop بالكامل مع استثناء الملفات غير المرغوبة
-      archive.directory(wahyDesktopPath, false, (entry) => {
-        // تجاهل ملفات node_modules وملفات النظام المخفية وملفات التوزيع الكبيرة
-        if (entry.name.includes('node_modules') || 
-            entry.name.startsWith('.') || 
-            entry.name.includes('.log') || 
-            entry.name.includes('.tmp') ||
-            entry.name.includes('dist/win-unpacked') ||
-            entry.name.endsWith('.zip')) {
-          return false;
-        }
-        return entry;
-      });
-
+      // قراءة الملفات يدوياً وإضافتها للأرشيف
+      const addFilesRecursively = (dirPath, archivePath = '') => {
+        const items = fs.readdirSync(dirPath);
+        
+        items.forEach(item => {
+          const fullPath = path.join(dirPath, item);
+          const archiveItemPath = archivePath ? `${archivePath}/${item}` : item;
+          
+          // تجاهل الملفات غير المرغوبة
+          if (item.includes('node_modules') || 
+              item.startsWith('.') || 
+              item.includes('.log') || 
+              item.includes('.tmp') ||
+              item.includes('win-unpacked') ||
+              item.endsWith('.zip')) {
+            return;
+          }
+          
+          const stat = fs.statSync(fullPath);
+          
+          if (stat.isDirectory()) {
+            addFilesRecursively(fullPath, archiveItemPath);
+          } else {
+            archive.file(fullPath, { name: archiveItemPath });
+          }
+        });
+      };
+      
+      addFilesRecursively(wahyDesktopPath);
+      
       await archive.finalize();
+      
     } catch (error) {
       console.error("Error creating wahy-desktop archive:", error);
-      res.status(500).json({ error: 'خطأ في تحميل البرنامج' });
+      if (!res.headersSent) {
+        res.status(500).json({ error: 'خطأ في تحميل البرنامج' });
+      }
     }
   });
 
