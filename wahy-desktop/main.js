@@ -7,6 +7,14 @@ const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+// التحقق من التوقيع الرقمي كأول عملية
+const SignatureChecker = require('./system/license-guard/signature-checker');
+const signatureChecker = new SignatureChecker();
+
+// التحقق الإجباري من التوقيع الرقمي
+console.log('🔐 بدء التحقق من سلامة التوقيع الرقمي...');
+signatureChecker.enforceSignatureIntegrity();
+
 // نظام الحماية المتقدم
 const ProtectionManager = require('./system/license-guard/protection-manager');
 

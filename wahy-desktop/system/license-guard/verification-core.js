@@ -91,8 +91,11 @@ class VerificationCore {
         // فحص 4: التحقق من البيئة
         this._validationMap.set('environment', this._checkEnvironment.bind(this));
         
-        // فحص 5: التحقق من التوقيع الرقمي
+        // فحص 5: التحقق من التوقيع الرقمي المتطور
         this._validationMap.set('digital_signature', this._checkDigitalSignature.bind(this));
+        
+        // فحص 6: التحقق من سلامة LICENSE وتوقيعه
+        this._validationMap.set('license_signature', this._checkLicenseSignature.bind(this));
     }
 
     /**
@@ -362,6 +365,61 @@ class VerificationCore {
 
         } catch (error) {
             return { passed: false, reason: 'signature_check_error', penalty: 20 };
+        }
+    }
+
+    /**
+     * فحص سلامة ملف LICENSE وتوقيعه الرقمي
+     */
+    _checkLicenseSignature() {
+        try {
+            // استيراد مدقق التوقيع
+            const SignatureChecker = require('./signature-checker');
+            const signatureChecker = new SignatureChecker();
+
+            // التحقق السريع من وجود الملفات
+            if (!signatureChecker.quickCheck()) {
+                return { passed: false, reason: 'license_signature_files_missing', penalty: 45 };
+            }
+
+            // التحقق الشامل من التوقيع
+            const verification = signatureChecker.verifyDigitalSignature();
+
+            if (!verification.valid) {
+                let penalty = 30;
+                
+                // تحديد العقوبة حسب نوع الخطأ
+                switch (verification.reason) {
+                    case 'missing_files':
+                        penalty = 50;
+                        break;
+                    case 'file_modified':
+                        penalty = 45;
+                        break;
+                    case 'invalid_signature':
+                        penalty = 40;
+                        break;
+                    default:
+                        penalty = 35;
+                }
+
+                return { 
+                    passed: false, 
+                    reason: `license_signature_${verification.reason}`, 
+                    penalty: penalty,
+                    details: verification.details 
+                };
+            }
+
+            return { 
+                passed: true, 
+                reason: 'license_signature_valid',
+                details: verification.details,
+                signatureInfo: verification.signatureInfo
+            };
+
+        } catch (error) {
+            return { passed: false, reason: 'license_signature_check_error', penalty: 35 };
         }
     }
 
