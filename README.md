@@ -399,4 +399,4 @@ SOFTWARE.
 <div align="center">
   <p><strong>صُنع بـ ❤️ للمجتمع العربي التقني</strong></p>
   <p>تعلم، اكتب، شارك - بلغتك الأم</p>
-</div>
+</div># wahy-software
