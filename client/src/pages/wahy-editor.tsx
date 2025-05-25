@@ -23,8 +23,11 @@ import {
   Monitor,
   Code,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  HelpCircle
 } from "lucide-react";
+import { Link } from "wouter";
 import type { WahyFile } from "@shared/schema";
 
 export default function WahyEditor() {
@@ -196,6 +199,18 @@ export default function WahyEditor() {
           </div>
           
           <div className="flex items-center space-x-3 space-x-reverse">
+            <Link href="/guide">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-blue-600">
+                <BookOpen className="h-4 w-4 ml-1" />
+                دليل الاستخدام
+              </Button>
+            </Link>
+            <Link href="/tutorial">
+              <Button variant="ghost" size="sm" className="text-slate-600 hover:text-blue-600">
+                <HelpCircle className="h-4 w-4 ml-1" />
+                دروس تفاعلية
+              </Button>
+            </Link>
             <Button
               onClick={handleSave}
               disabled={saveFileMutation.isPending}
