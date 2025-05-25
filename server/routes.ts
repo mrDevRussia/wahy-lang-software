@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertWahyFileSchema, interpretationResultSchema } from "@shared/schema";
-import { interpretWahyCode } from "./wahy-interpreter-enhanced";
+import { interpretWahyCode } from "./wahy-interpreter";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {

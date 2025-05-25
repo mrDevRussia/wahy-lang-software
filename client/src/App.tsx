@@ -3,7 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import WahyEditorSimple from "@/pages/wahy-editor-simple";
+import WahyEditor from "@/pages/wahy-editor";
 import LoginPage from "@/pages/login";
 import MobileEditor from "@/pages/mobile-editor";
 import TutorialPage from "@/pages/tutorial";
@@ -28,7 +28,7 @@ function Router() {
       <Route path="/login" component={LoginPage} />
       <Route path="/tutorial" component={TutorialPage} />
       <Route path="/mobile" component={MobileEditor} />
-      <Route path="/" component={isMobile ? MobileEditor : WahyEditorSimple} />
+      <Route path="/" component={isMobile ? MobileEditor : WahyEditor} />
       <Route component={NotFound} />
     </Switch>
   );

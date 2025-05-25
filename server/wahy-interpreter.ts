@@ -5,49 +5,21 @@ interface InterpretationResult {
   lineNumber?: number;
 }
 
-// واجهة لتخزين المتغيرات والوظائف
-interface WahyVariable {
-  name: string;
-  value: any;
-  type: 'number' | 'string' | 'boolean';
-}
-
-interface WahyFunction {
-  name: string;
-  element: string;
-  event: string;
-  actions: string[];
-}
-
-// واجهة لتخزين أنماط CSS
-interface WahyStyle {
-  selector: string;
-  properties: Record<string, string>;
-}
-
 class WahyHTMLGenerator {
   private htmlParts: string[] = [];
   private pageOpened = false;
   private pageClosed = false;
-  private customStyles: WahyStyle[] = [];
-  private variables: WahyVariable[] = [];
-  private functions: WahyFunction[] = [];
+  private styles: Record<string, Record<string, string>> = {};
   private listStack: string[] = [];
   private sectionStack: string[] = [];
-  private elementCounter = 0;
-  private scriptParts: string[] = [];
 
   reset() {
     this.htmlParts = [];
     this.pageOpened = false;
     this.pageClosed = false;
-    this.customStyles = [];
-    this.variables = [];
-    this.functions = [];
+    this.styles = {};
     this.listStack = [];
     this.sectionStack = [];
-    this.elementCounter = 0;
-    this.scriptParts = [];
   }
 
   openPage(title: string) {
@@ -62,27 +34,19 @@ class WahyHTMLGenerator {
     this.htmlParts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
     this.htmlParts.push(`<title>${this.escapeHtml(title)}</title>`);
     this.htmlParts.push('<style>');
-    this.htmlParts.push('body { font-family: "Noto Sans Arabic", "Arial", sans-serif; margin: 20px; padding: 20px; background-color: white; color: #333; }');
-    this.htmlParts.push('h1, h2, h3, h4, h5, h6 { color: #333; margin: 15px 0; }');
+    this.htmlParts.push('body { font-family: "Arial", sans-serif; margin: 20px; padding: 20px; }');
+    this.htmlParts.push('h1, h2, h3, h4, h5, h6 { color: #333; }');
     this.htmlParts.push('p { line-height: 1.6; margin: 10px 0; }');
     this.htmlParts.push('ul, ol { margin: 10px 0; padding-right: 20px; }');
     this.htmlParts.push('li { margin: 5px 0; }');
-    this.htmlParts.push('a { color: #007bff; text-decoration: none; transition: color 0.3s; }');
-    this.htmlParts.push('a:hover { text-decoration: underline; color: #0056b3; }');
-    this.htmlParts.push('img { max-width: 100%; height: auto; margin: 10px 0; border-radius: 5px; }');
+    this.htmlParts.push('a { color: #007bff; text-decoration: none; }');
+    this.htmlParts.push('a:hover { text-decoration: underline; }');
+    this.htmlParts.push('img { max-width: 100%; height: auto; margin: 10px 0; }');
     this.htmlParts.push('hr { margin: 20px 0; border: none; border-top: 1px solid #ddd; }');
-    this.htmlParts.push('.section { margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 5px; background: #f9f9f9; }');
-    this.htmlParts.push('button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; font-family: inherit; transition: all 0.3s; }');
-    this.htmlParts.push('button:hover { opacity: 0.8; transform: translateY(-2px); }');
-    this.htmlParts.push('.btn-primary { background-color: #007bff; color: white; }');
-    this.htmlParts.push('.btn-success { background-color: #28a745; color: white; }');
-    this.htmlParts.push('.btn-danger { background-color: #dc3545; color: white; }');
-    this.htmlParts.push('.btn-warning { background-color: #ffc107; color: #333; }');
-    this.htmlParts.push('.center-text { text-align: center; }');
-    this.htmlParts.push('.large-text { font-size: 1.5em; }');
-    this.htmlParts.push('.small-text { font-size: 0.8em; }');
-    this.htmlParts.push('.bold-text { font-weight: bold; }');
-    this.htmlParts.push('.counter { font-size: 2em; font-weight: bold; color: #007bff; text-align: center; margin: 20px 0; }');
+    this.htmlParts.push('.section { margin: 20px 0; padding: 15px; border: 1px solid #eee; border-radius: 5px; }');
+    this.htmlParts.push('</style>');
+    this.htmlParts.push('</head>');
+    this.htmlParts.push('<body>');
 
     this.pageOpened = true;
   }
