@@ -363,8 +363,8 @@ export class WahyTutorials {
   }
 
   private findStepById(stepId: string): TutorialStep | undefined {
-    for (const tutorial of this.tutorials.values()) {
-      const step = tutorial.steps.find(s => s.id === stepId);
+    for (const tutorial of Array.from(this.tutorials.values())) {
+      const step = tutorial.steps.find((s: TutorialStep) => s.id === stepId);
       if (step) return step;
     }
     return undefined;

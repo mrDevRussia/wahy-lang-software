@@ -285,13 +285,12 @@ export default function WahyPlayground() {
                             language="text"
                             theme="vs-light"
                             value={userCode}
-                            onChange={(value) => setUserCode(value || '')}
+                            onChange={(value: string | undefined) => setUserCode(value || '')}
                             options={{
                               minimap: { enabled: false },
                               fontSize: 14,
                               lineNumbers: 'on',
                               wordWrap: 'on',
-                              rtl: true,
                               fontFamily: 'Monaco, "Courier New", monospace',
                             }}
                           />
