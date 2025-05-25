@@ -1,0 +1,24 @@
+{
+  "securityLevel": "maximum",
+  "version": "1.0.0",
+  "protectionScheme": "RSA-2048",
+  "requiredScore": 70,
+  "checksEnabled": {
+    "licenseVerification": true,
+    "signatureValidation": true,
+    "systemIntegrity": true,
+    "environmentCheck": true,
+    "passkeyProtection": true,
+    "discordIntegration": true
+  },
+  "securityWeights": {
+    "license_check": 20,
+    "system_files": 15,
+    "project_integrity": 10,
+    "environment": 10,
+    "digital_signature": 20,
+    "license_signature": 25
+  },
+  "lastUpdate": "2024-05-25",
+  "protectionActive": true
+}

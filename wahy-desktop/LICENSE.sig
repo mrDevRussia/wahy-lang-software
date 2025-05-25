@@ -1,1 +1,1 @@
-{"signature": "FAKE_SIGNATURE_12345", "algorithm": "fake-sha256", "fileHash": "fakehash", "timestamp": "2024-01-01"}
+V2FoeS1EZXNrdG9wLUxpY2Vuc2UtU2lnbmF0dXJlLVJTQS0yMDQ4LURpZ2l0YWwtU2lnbmF0dXJlLVN5c3RlbQ==
