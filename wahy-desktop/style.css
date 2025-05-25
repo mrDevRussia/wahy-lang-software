@@ -1,0 +1,515 @@
+/**
+ * Wahy Desktop - Styles
+ * تصميم تطبيق وحي لسطح المكتب
+ */
+
+/* الخطوط والمتغيرات */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary-color: #64748b;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
+  direction: rtl;
+  overflow: hidden;
+}
+
+/* التخطيط الرئيسي */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* شريط الأدوات */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.toolbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+/* الأزرار */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  outline: none;
+}
+
+.btn:hover {
+  background: var(--background);
+  border-color: var(--primary-color);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.btn-icon {
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: var(--background);
+}
+
+/* المحتوى الرئيسي */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* اللوحات */
+.editor-panel,
+.preview-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.preview-panel {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.preview-controls {
+  display: flex;
+  gap: 4px;
+}
+
+/* محرر الكود */
+.editor-container {
+  flex: 1;
+  position: relative;
+}
+
+#codeEditor {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--surface);
+  color: var(--text-primary);
+  resize: none;
+  direction: rtl;
+}
+
+#codeEditor::placeholder {
+  color: var(--text-muted);
+  direction: rtl;
+}
+
+/* نافذة المعاينة */
+.preview-container {
+  flex: 1;
+  position: relative;
+  background: var(--surface);
+}
+
+#preview {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+/* تذييل اللوحات */
+.panel-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.code-stats {
+  display: flex;
+  gap: 16px;
+}
+
+.quick-actions select {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+/* وحدة التحكم */
+.console-panel {
+  height: 120px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.console-content {
+  flex: 1;
+  padding: 8px 16px;
+  overflow-y: auto;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.console-message {
+  padding: 2px 0;
+  word-wrap: break-word;
+}
+
+.console-message.info {
+  color: #60a5fa;
+}
+
+.console-message.success {
+  color: #34d399;
+}
+
+.console-message.warning {
+  color: #fbbf24;
+}
+
+.console-message.error {
+  color: #f87171;
+}
+
+/* شريط الحالة */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 16px;
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+  height: 24px;
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* النافذة المنبثقة للمساعدة */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: var(--surface);
+  margin: 5% auto;
+  padding: 0;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 80vh;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.close {
+  color: var(--text-muted);
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.help-section {
+  margin-bottom: 24px;
+}
+
+.help-section h3 {
+  color: var(--primary-color);
+  font-size: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--border);
+}
+
+.help-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.help-section li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.help-section li:last-child {
+  border-bottom: none;
+}
+
+.help-section code {
+  background: var(--background);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* تأثيرات التحويل */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* حالات التحميل */
+.loading {
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--border);
+  border-top: 2px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* تجاوبية */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .editor-panel,
+  .preview-panel {
+    flex: none;
+    height: 50%;
+  }
+  
+  .toolbar {
+    padding: 8px 12px;
+  }
+  
+  .toolbar-right {
+    gap: 4px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .app-title {
+    font-size: 16px;
+  }
+  
+  .app-subtitle {
+    display: none;
+  }
+}
+
+/* شريط التمرير المخصص */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* تحسينات إضافية */
+.highlight {
+  background-color: rgba(37, 99, 235, 0.1);
+  border-left: 3px solid var(--primary-color);
+  padding-left: 8px;
+}
+
+.success-state {
+  color: var(--success);
+}
+
+.error-state {
+  color: var(--error);
+}
+
+.warning-state {
+  color: var(--warning);
+}

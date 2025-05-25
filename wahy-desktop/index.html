@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wahy Desktop - محرر لغة وحي</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- شريط الأدوات العلوي -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <h1 class="app-title">🖥️ Wahy Desktop</h1>
+                <span class="app-subtitle">محرر لغة البرمجة العربية</span>
+            </div>
+            <div class="toolbar-right">
+                <button id="runBtn" class="btn btn-primary">
+                    ▶️ تشغيل
+                </button>
+                <button id="clearBtn" class="btn btn-secondary">
+                    🗑️ مسح
+                </button>
+                <button id="saveBtn" class="btn btn-secondary">
+                    💾 حفظ
+                </button>
+                <button id="exportBtn" class="btn btn-secondary">
+                    📤 تصدير HTML
+                </button>
+            </div>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="main-content">
+            <!-- محرر الكود -->
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h3>📝 محرر الكود</h3>
+                    <div class="file-info">
+                        <span id="fileName">مشروع جديد.wahy</span>
+                        <span id="fileStatus"></span>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <textarea id="codeEditor" placeholder="اكتب كود وحي هنا...
+
+مثال:
+افتح صفحة &quot;صفحتي الأولى&quot;
+أضف عنوان &quot;مرحباً بكم في لغة وحي&quot;
+أضف فقرة &quot;هذا مثال بسيط على استخدام اللغة العربية في البرمجة&quot;
+أضف رابط &quot;زوروا موقعنا&quot; &quot;https://wahy-lang.com&quot;
+أغلق صفحة"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <div class="code-stats">
+                        <span id="lineCount">السطور: 0</span>
+                        <span id="charCount">الأحرف: 0</span>
+                    </div>
+                    <div class="quick-actions">
+                        <select id="exampleSelect">
+                            <option value="">اختر مثال جاهز...</option>
+                            <option value="simple">مثال بسيط</option>
+                            <option value="styled">صفحة مع تصميم</option>
+                            <option value="interactive">صفحة تفاعلية</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نافذة المعاينة -->
+            <div class="preview-panel">
+                <div class="panel-header">
+                    <h3>👁️ معاينة النتيجة</h3>
+                    <div class="preview-controls">
+                        <button id="refreshPreview" class="btn-icon" title="تحديث المعاينة">🔄</button>
+                        <button id="fullscreen" class="btn-icon" title="ملء الشاشة">⛶</button>
+                    </div>
+                </div>
+                <div class="preview-container">
+                    <iframe id="preview" src="about:blank"></iframe>
+                </div>
+                <div class="panel-footer">
+                    <div id="previewStatus" class="status-text">
+                        جاهز للتشغيل...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- وحدة التحكم السفلية -->
+        <div class="console-panel">
+            <div class="panel-header">
+                <h3>📟 وحدة التحكم</h3>
+                <button id="clearConsole" class="btn-icon">🗑️</button>
+            </div>
+            <div id="console" class="console-content">
+                <div class="console-message info">مرحباً بك في Wahy Desktop! اكتب كودك وشغّله لترى النتيجة.</div>
+            </div>
+        </div>
+
+        <!-- شريط الحالة السفلي -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span id="interpreterStatus">مفسر وحي جاهز</span>
+            </div>
+            <div class="status-right">
+                <span>Wahy Desktop v1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المساعدة -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📚 دليل أوامر لغة وحي</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>أوامر الصفحة الأساسية</h3>
+                    <ul>
+                        <li><code>افتح صفحة "العنوان"</code> - إنشاء صفحة HTML جديدة</li>
+                        <li><code>أغلق صفحة</code> - إنهاء الصفحة</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>أوامر المحتوى</h3>
+                    <ul>
+                        <li><code>أضف عنوان "النص"</code> - إضافة عنوان رئيسي</li>
+                        <li><code>أضف عنوان_فرعي "النص"</code> - إضافة عنوان فرعي</li>
+                        <li><code>أضف فقرة "النص"</code> - إضافة فقرة</li>
+                        <li><code>أضف رابط "النص" "الرابط"</code> - إضافة رابط</li>
+                        <li><code>أضف صورة "الرابط" "الوصف"</code> - إضافة صورة</li>
+                        <li><code>أنشئ_زر "النص" "الإجراء"</code> - إضافة زر</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>أوامر التصميم</h3>
+                    <ul>
+                        <li><code>غيّر لون_الخلفية إلى "اللون"</code> - تغيير لون الخلفية</li>
+                        <li><code>غيّر لون_النص إلى "اللون"</code> - تغيير لون النص</li>
+                        <li><code>غيّر الخط إلى "نوع_الخط"</code> - تغيير نوع الخط</li>
+                    </ul>
+                </div>
+                
+                <div class="help-section">
+                    <h3>أوامر القوائم</h3>
+                    <ul>
+                        <li><code>ابدأ قائمة</code> - بدء قائمة نقطية</li>
+                        <li><code>ابدأ قائمة_مرقمة</code> - بدء قائمة مرقمة</li>
+                        <li><code>أضف عنصر "النص"</code> - إضافة عنصر للقائمة</li>
+                        <li><code>أنهِ قائمة</code> - إنهاء القائمة</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تحميل السكريبت -->
+    <script src="wahy-interpreter.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>
