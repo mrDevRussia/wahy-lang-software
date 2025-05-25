@@ -156,8 +156,18 @@ class VerificationCore {
             const licenseContent = fs.readFileSync(licensePath, 'utf8');
             
             // التحقق من الحجم (يجب أن يكون مشفراً)
-            if (licenseContent.length < 100) {
-                return { passed: false, reason: 'license_file_too_small', penalty: 25 };
+            if (licenseContent.length < 200) {
+                return { passed: false, reason: 'license_file_too_small', penalty: 30 };
+            }
+            
+            // التحقق من وجود محتوى مشفر حقيقي
+            if (!licenseContent.includes('encrypted') || !licenseContent.includes('authTag')) {
+                return { passed: false, reason: 'license_file_not_encrypted', penalty: 35 };
+            }
+            
+            // فحص البنية الأساسية للملف المشفر
+            if (licenseContent.includes('fake') || licenseContent.includes('tampered') || licenseContent.includes('test')) {
+                return { passed: false, reason: 'license_file_suspicious_content', penalty: 40 };
             }
 
             // محاولة تحليل JSON
@@ -411,12 +421,62 @@ class VerificationCore {
             // فحص سريع للملفات الأساسية فقط
             const licenseCheck = this._checkLicenseFile();
             const systemCheck = this._checkSystemFiles();
+            
+            // فحص إضافي: التحقق من عدم التلاعب بملفات الحماية
+            const protectionIntegrity = this._checkProtectionIntegrity();
 
-            return licenseCheck.passed && systemCheck.passed;
+            const allPassed = licenseCheck.passed && systemCheck.passed && protectionIntegrity.passed;
+            
+            // إذا فشل أي فحص، تعطيل النظام فوراً
+            if (!allPassed) {
+                this._triggerSecurityAlert('quick_validation_failed', {
+                    license: licenseCheck.passed,
+                    system: systemCheck.passed,
+                    protection: protectionIntegrity.passed
+                });
+            }
+
+            return allPassed;
 
         } catch (error) {
             this._triggerSecurityAlert('quick_validation_error', error);
             return false;
+        }
+    }
+
+    /**
+     * فحص سلامة ملفات الحماية نفسها
+     */
+    _checkProtectionIntegrity() {
+        try {
+            const protectionFiles = [
+                'system/license-guard/crypto-engine.js',
+                'system/license-guard/license-validator.js',
+                'system/license-guard/protection-manager.js'
+            ];
+
+            for (const file of protectionFiles) {
+                const filePath = path.join(__dirname, '..', '..', file);
+                
+                if (!fs.existsSync(filePath)) {
+                    return { passed: false, reason: `protection_file_missing_${file.split('/').pop()}`, penalty: 50 };
+                }
+
+                // فحص حجم ملف الحماية
+                try {
+                    const stats = fs.statSync(filePath);
+                    if (stats.size < 1000) { // ملفات الحماية يجب أن تكون كبيرة
+                        return { passed: false, reason: `protection_file_too_small_${file.split('/').pop()}`, penalty: 40 };
+                    }
+                } catch (error) {
+                    return { passed: false, reason: `protection_file_access_error_${file.split('/').pop()}`, penalty: 35 };
+                }
+            }
+
+            return { passed: true, reason: 'protection_integrity_valid' };
+
+        } catch (error) {
+            return { passed: false, reason: 'protection_integrity_check_error', penalty: 45 };
         }
     }
 

@@ -24,6 +24,35 @@ class WahyInterpreter {
   }
 
   interpret(code) {
+    // التحقق الأمني الإجباري قبل أي تنفيذ
+    if (!_securityCheck) {
+      return {
+        success: false,
+        html: '<div style="color: red; text-align: center; padding: 50px;"><h1>🔒 مفسر وحي معطل</h1><p>تم تعطيل المفسر لأسباب أمنية. يرجى التحقق من سلامة النظام.</p></div>',
+        error: 'مفسر وحي معطل لأسباب أمنية - فشل التحقق الأولي'
+      };
+    }
+
+    // فحص أمني مستمر أثناء التشغيل
+    try {
+      const runtimeCheck = verificationCore.quickCheck();
+      if (!runtimeCheck) {
+        _securityCheck = false;
+        return {
+          success: false,
+          html: '<div style="color: orange; text-align: center; padding: 50px;"><h1>⚠️ توقف التشغيل</h1><p>تم اكتشاف مشكلة أمنية أثناء التشغيل. تم إيقاف المفسر.</p></div>',
+          error: 'فشل التحقق الأمني أثناء التشغيل'
+        };
+      }
+    } catch (error) {
+      _securityCheck = false;
+      return {
+        success: false,
+        html: '<div style="color: red; text-align: center; padding: 50px;"><h1>❌ خطأ أمني</h1><p>حدث خطأ في نظام الأمان. تم إيقاف التشغيل.</p></div>',
+        error: 'خطأ في نظام التحقق الأمني: ' + error.message
+      };
+    }
+
     try {
       this.reset();
       const lines = code.split('\n');
