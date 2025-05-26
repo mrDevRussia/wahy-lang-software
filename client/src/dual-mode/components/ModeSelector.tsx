@@ -136,7 +136,7 @@ export default function ModeSelector({ onModeSelect, currentMode, className }: M
         <Card className="bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center space-x-2 space-x-reverse">
-              <Memory className="w-5 h-5 text-blue-600" />
+              <HardDrive className="w-5 h-5 text-blue-600" />
               <span>إحصائيات الأداء</span>
             </CardTitle>
           </CardHeader>
@@ -272,7 +272,7 @@ export default function ModeSelector({ onModeSelect, currentMode, className }: M
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-4 space-x-reverse">
                     <div className="flex items-center space-x-1 space-x-reverse">
-                      <Memory className="w-3 h-3" />
+                      <HardDrive className="w-3 h-3" />
                       <span className={getPerformanceColor(memoryUsage, mode.maxMemory)}>
                         {formatMemoryUsage(memoryUsage)} / {formatMemoryUsage(mode.maxMemory)}
                       </span>
