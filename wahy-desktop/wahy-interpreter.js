@@ -377,9 +377,29 @@ class WahyInterpreter {
   }
 }
 
-// تصدير المفسر للاستخدام في الواجهة
+/**
+ * دالة مساعدة لتفسير كود وحي مباشرة
+ */
+function interpretWahyCode(code) {
+  try {
+    const interpreter = new WahyInterpreter();
+    return interpreter.interpret(code);
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message,
+      type: 'html'
+    };
+  }
+}
+
+// تصدير المفسر والدالة للاستخدام في الواجهة
 if (typeof window !== 'undefined') {
   window.WahyInterpreter = WahyInterpreter;
+  window.interpretWahyCode = interpretWahyCode;
 } else if (typeof module !== 'undefined') {
-  module.exports = WahyInterpreter;
+  module.exports = {
+    WahyInterpreter,
+    interpretWahyCode
+  };
 }
