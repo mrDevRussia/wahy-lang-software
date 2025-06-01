@@ -356,7 +356,7 @@ A: قد يكون بسبب:
 ```
 MIT License
 
-Copyright (c) 2024 Wahy Programming Language Team
+Copyright (c) 2025 Wahy Programming Language Team & Karim mohamed Hanafy Abdel-Gawad
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -381,9 +381,7 @@ SOFTWARE.
 
 - 🌐 **الموقع الرسمي**: [No iformation](https:/noinformation)
 - 📧 **البريد الإلكتروني**: rtesurty@gmail.com
-- 💬 **Discord**: [انضم لمجتمعنا](https://discord.gg/noinformation)
-- 🐦 **تويتر**: [@noinformation](https://twitter.com/noinformation)
-- 📱 **تليجرام**: [قناة وحي](https://t.me/noinformation)
+- 💬 **Discord**: [انضم لمجتمعنا](https://discord.gg/vY8j8eADH8)
 
 ## 🙏 شكر وتقدير
 
