@@ -51,8 +51,8 @@
 
 1. **استنساخ المستودع**
 ```bash
-git clone https://github.com/username/wahy-lang.git
-cd wahy-lang
+git clone https://github.com/mrDevRussia/wahy-lang-software.git
+cd wahy-lang-software
 ```
 
 2. **تثبيت التبعيات**
